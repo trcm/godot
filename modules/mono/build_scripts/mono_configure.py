@@ -262,13 +262,14 @@ def configure(env, env_mono):
             # TODO: Add option to force using pkg-config
             print('Mono root directory not found. Using pkg-config instead')
 
+            env['ENV'] = os.environ
             env.ParseConfig('pkg-config monosgen-2 --libs')
             env_mono.ParseConfig('pkg-config monosgen-2 --cflags')
 
-            tmpenv = Environment()
+            tmpenv = Environment(ENV = os.environ)
             tmpenv.AppendENVPath('PKG_CONFIG_PATH', os.getenv('PKG_CONFIG_PATH'))
             tmpenv.ParseConfig('pkg-config monosgen-2 --libs-only-L')
-
+            
             for hint_dir in tmpenv['LIBPATH']:
                 name_found = find_file_in_dir(hint_dir, mono_lib_names, prefix='lib', extension=sharedlib_ext)
                 if name_found:
@@ -281,6 +282,8 @@ def configure(env, env_mono):
 
         if not mono_static:
             libs_output_dir = get_android_out_dir(env) if is_android else '#bin'
+            print(mono_lib_path)
+            print(libs_output_dir, 'lib' + mono_so_name + sharedlib_ext)
             copy_file(mono_lib_path, libs_output_dir, 'lib' + mono_so_name + sharedlib_ext)
 
     if not tools_enabled:

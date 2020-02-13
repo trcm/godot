@@ -290,7 +290,7 @@ def configure(env):
         print("Enabling ALSA")
         env.Append(CPPDEFINES=["ALSA_ENABLED", "ALSAMIDI_ENABLED"])
 	# Don't parse --cflags, we don't need to add /usr/include/alsa to include path
-        env.ParseConfig('pkg-config alsa --libs')
+        env.ParseConfig('pkg-config alsa --cflags --libs')
     else:
         print("ALSA libraries not found, disabling driver")
 
